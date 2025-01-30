@@ -23,7 +23,7 @@ def get_news():
     else:
         return []
 
-# Function to analyze news impact with AI
+# Function to analyze news impact with AI (Updated for OpenAI 1.0.0+)
 def analyze_news(news_title, news_description):
     prompt = f"""
     Analyze the following news and explain how it impacts the stock and crypto markets.
@@ -33,13 +33,14 @@ def analyze_news(news_title, news_description):
     
     Your answer should be concise and provide clear insights for investors.
     """
-    
+
     try:
-        response = openai.ChatCompletion.create(
+        client = openai.OpenAI()  # New client initialization
+        response = client.chat.completions.create(
             model="gpt-4-turbo",
             messages=[{"role": "system", "content": prompt}]
         )
-        return response["choices"][0]["message"]["content"]
+        return response.choices[0].message.content
     except Exception as e:
         return f"⚠️ AI analysis unavailable: {e}"
 

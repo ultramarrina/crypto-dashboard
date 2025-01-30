@@ -2,4 +2,4 @@ streamlit
 pandas
 requests
 yfinance
-openai
+openai>=1.0.0

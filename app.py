@@ -23,7 +23,7 @@ def get_news():
     else:
         return []
 
-# Function to analyze news impact with AI (Updated for OpenAI 1.0.0+)
+# Function to analyze news impact with AI (Fixed Model Name)
 def analyze_news(news_title, news_description):
     prompt = f"""
     Analyze the following news and explain how it impacts the stock and crypto markets.
@@ -35,9 +35,9 @@ def analyze_news(news_title, news_description):
     """
 
     try:
-        client = openai.OpenAI()  # New client initialization
+        client = openai.OpenAI()
         response = client.chat.completions.create(
-            model="gpt-4-turbo",
+            model="gpt-4o-mini",  # Changed from gpt-4-turbo to gpt-4o-mini
             messages=[{"role": "system", "content": prompt}]
         )
         return response.choices[0].message.content

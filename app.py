@@ -1,25 +1,28 @@
 import streamlit as st
-import yfinance as yf
 import requests
-import pandas as pd
+import yfinance as yf
+import os
 
 st.title("Crypto AI Dashboard")
 
-# Function to get Yahoo Finance news
+# Load NewsAPI key from environment variable
+NEWS_API_KEY = os.getenv("NEWS_API_KEY", "YOUR_NEWSAPI_KEY_HERE")
+
 def get_news():
-    url = "https://query1.finance.yahoo.com/v1/finance/search?q=crypto"
-    response = requests.get(url).json()
-    articles = response.get("news", [])
-    return [f"📰 {a['title']} - {a['publisher']}" for a in articles[:5]]
+    url = f"https://newsapi.org/v2/everything?q=crypto&language=en&apiKey={NEWS_API_KEY}"
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        data = response.json()
+        articles = data.get("articles", [])
+        return [f"📰 {a['title']} - {a['source']['name']}" for a in articles[:5]]
+    else:
+        return ["⚠️ No news available. API Error!"]
 
 st.subheader("Latest News")
 news_list = get_news()
-if news_list:
-    st.write("\n".join(news_list))
-else:
-    st.write("⚠️ No news available. Try again later.")
+st.write("\n".join(news_list))
 
-# Bitcoin price chart
 btc = yf.Ticker("BTC-USD")
 btc_df = btc.history(period="1mo")
 st.subheader("📊 Bitcoin Price (1 Month)")
